@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>COSMO Career Pathways</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo"><span></span></div>
+      <div>
+        <div class="brand-name">COSMO Career Pathways</div>
+        <div class="brand-sub">From where you are, to where you want to be</div>
+      </div>
+    </div>
+    <div class="topbar-tag">Graduation Project</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Your career, step&nbsp;by&nbsp;step.</h1>
+    <p class="hero-lead">Choose where you are starting and the job you want. We'll map the fastest route and show the qualifications, skills, certifications and experience needed at every step.</p>
+
+    <div class="controls">
+      <div class="control control-grow">
+        <label class="control-label">1 · Where are you starting?</label>
+        <div class="chips" id="entryChips"></div>
+      </div>
+      <div class="control">
+        <label class="control-label">2 · Years of work experience</label>
+        <div class="slider">
+          <input type="range" id="expRange" min="0" max="15" value="0" />
+          <span class="exp-val" id="expVal">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="trackbar">
+  <div class="trackbar-inner" id="trackTabs"></div>
+</nav>
+
+<main class="wrap">
+  <div class="board-head">
+    <div>
+      <h2 id="trackTitle"></h2>
+      <p id="trackDesc"></p>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="pathway" id="board"></div>
+
+  <p class="hint">
+    <strong>Click any step</strong> to open the full skills and certification list.
+    <span class="hint-note">Skill levels — 1&nbsp;Follow · 2&nbsp;Assist · 3&nbsp;Apply · 4&nbsp;Ensure · 5&nbsp;Strategise</span>
+  </p>
+</main>
+
+<footer class="foot">
+  <p>Route data based on the Brunei ICT Industry Competency Framework (BIICF) and COSMO course levels.</p>
+  <p class="foot-sub">Unofficial student guide · Always confirm entry requirements with COSMO.</p>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

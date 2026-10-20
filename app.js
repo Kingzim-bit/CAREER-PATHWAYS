@@ -3,6 +3,55 @@
 
   var $ = function (id) { return document.getElementById(id); };
 
+  var STORE_KEY = "cp-progress-v1";
+  var progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; } catch (err) { progress = {}; }
+  function isDone(id) { return !!progress[id]; }
+  function toggleDone(id) {
+    if (progress[id]) delete progress[id]; else progress[id] = 1;
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (err) {}
+  }
+
+  function readURL() {
+    var p = new URLSearchParams(location.search);
+    var tr = p.get("track");
+    if (tr && PF.tracks.some(function (t) { return t.id === tr; })) state.track = tr;
+    var fr = p.get("from");
+    if (fr && PF.entryPoints.some(function (e) { return e.id === fr; })) state.entry = fr;
+    var ex = parseInt(p.get("exp"), 10);
+    if (!isNaN(ex) && ex >= 0 && ex <= 50) state.exp = Math.min(ex, 15);
+  }
+
+  function syncURL() {
+    try {
+      var p = new URLSearchParams();
+      p.set("track", state.track);
+      p.set("from", state.entry);
+      if (state.exp) p.set("exp", String(state.exp));
+      history.replaceState(null, "", location.pathname + "?" + p.toString());
+    } catch (err) {}
+  }
+
+  function toast(msg) {
+    var el = $("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2200);
+  }
+
+  function shareLink() {
+    var url = location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(
+        function () { toast("Link copied — share your pathway!"); },
+        function () { prompt("Copy this link:", url); }
+      );
+    } else {
+      prompt("Copy this link:", url);
+    }
+  }
+
   function entryPoint() {
     return PF.entryPoints.filter(function (e) { return e.id === state.entry; })[0] || PF.entryPoints[0];
   }
@@ -58,6 +107,110 @@
     return "Study to BDQF " + s.needBdqf;
   }
 
+  function careerChar(level, variant) {
+    var NAVY = "#1E2859", YEL = "#FCD00F", SHIRT = "#eef1fa", PANTS = "#3a4573";
+    var SIL = level <= 1 ? "#b6bfd9" : "#8f9ac2";
+    var vb = variant === "bust" ? "15 2 70 108" : "0 0 100 140";
+    var cls = "career-char" + (variant === "lg" ? " career-char-lg" : "");
+    var s = '<svg class="' + cls + " lvl-" + level + '" viewBox="' + vb + '" aria-hidden="true">';
+
+    var legFill = level <= 1 ? SIL : PANTS;
+    s += '<rect x="34" y="92" width="13" height="42" rx="5" fill="' + legFill + '"/>';
+    s += '<rect x="53" y="92" width="13" height="42" rx="5" fill="' + legFill + '"/>';
+    if (level >= 6) {
+      s += '<rect x="31" y="126" width="18" height="9" rx="4" fill="' + YEL + '"/>';
+      s += '<rect x="51" y="126" width="18" height="9" rx="4" fill="' + YEL + '"/>';
+    }
+
+    var armFill = level <= 1 ? SIL : (level >= 5 ? NAVY : SHIRT);
+    var armStroke = (level >= 2 && level < 5) ? ' stroke="' + NAVY + '" stroke-width="1.5"' : "";
+    s += '<rect x="20" y="56" width="11" height="42" rx="5.5" fill="' + armFill + '"' + armStroke + "/>";
+    s += '<rect x="69" y="56" width="11" height="42" rx="5.5" fill="' + armFill + '"' + armStroke + "/>";
+
+    var torsoFill = level <= 1 ? SIL : SHIRT;
+    var torsoStroke = (level >= 2 && level < 5) ? ' stroke="' + NAVY + '" stroke-width="1.5"' : "";
+    s += '<path d="M30 54 Q50 46 70 54 L74 96 L26 96 Z" fill="' + torsoFill + '"' + torsoStroke + "/>";
+
+    if (level >= 3) {
+      s += '<polygon points="50,52 55,56 53,80 50,84 47,80 45,56" fill="' + NAVY + '"/>';
+      s += '<path d="M50 52 L50 68" stroke="' + YEL + '" stroke-width="2.5"/>';
+      s += '<rect x="44" y="68" width="12" height="9" rx="2" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.2"/>';
+    }
+    if (level >= 4) {
+      s += '<rect x="60" y="74" width="26" height="17" rx="2.5" fill="' + NAVY + '"/>';
+      s += '<rect x="63" y="77" width="20" height="11" rx="1.5" fill="#4453a3"/>';
+      s += '<circle cx="73" cy="92" r="1.6" fill="' + YEL + '"/>';
+    }
+    if (level >= 5) {
+      s += '<path d="M30 54 L47 51 L47 96 L26 96 Z" fill="' + NAVY + '"/>';
+      s += '<path d="M70 54 L53 51 L53 96 L74 96 Z" fill="' + NAVY + '"/>';
+      s += '<rect x="22" y="90" width="7" height="5" rx="1.5" fill="' + YEL + '"/>';
+    }
+    if (level >= 6) {
+      s += '<ellipse cx="26" cy="56" rx="10" ry="8" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.5"/>';
+      s += '<ellipse cx="74" cy="56" rx="10" ry="8" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.5"/>';
+      s += '<path d="M50 58 L53.5 66.5 L62.5 67 L55.5 72.5 L57.8 81 L50 76.2 L42.2 81 L44.5 72.5 L37.5 67 L46.5 66.5 Z" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1"/>';
+    }
+
+    s += '<circle cx="50" cy="32" r="15" fill="' + SIL + '"/>';
+    if (level >= 6) {
+      s += '<path d="M33 20 L37 9 L43.5 16 L50 6 L56.5 16 L63 9 L67 20 Z" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.2"/>';
+    } else if (level <= 1) {
+      s += '<polygon points="28,22 50,13 72,22 50,31" fill="' + NAVY + '"/>';
+      s += '<path d="M72 22 L74 32" stroke="' + YEL + '" stroke-width="2.5"/>';
+      s += '<circle cx="74" cy="33.5" r="2.6" fill="' + YEL + '"/>';
+    }
+    return s + "</svg>";
+  }
+
+  function roleLevel(index) {
+    return Math.min(index + 2, 6);
+  }
+
+  function renderStrip() {
+    var t = track();
+    var studyNeeded = status(t.roles[0]).type === "study";
+    var firstOnPath = -1;
+    t.roles.forEach(function (r, i) {
+      if (firstOnPath === -1 && status(r).type !== "study") firstOnPath = i;
+    });
+    var current = studyNeeded ? 1 : (firstOnPath === -1 ? 6 : firstOnPath + 2);
+
+    var panels = '<div class="strip-panel' + (current === 1 ? " current" : "") + '">' +
+      '<div class="char-wrap">' + careerChar(1) + "</div>" +
+      '<div class="lvl-word">LEVEL</div><div class="lvl-num">1</div>' +
+      '<div class="strip-caption">You · ' + entryPoint().label + "</div></div>";
+
+    for (var i = 0; i < 5; i++) {
+      var lvl = i + 2;
+      panels += '<div class="strip-panel' + (current === lvl ? " current" : "") + (isDone(t.roles[i].id) ? " done" : "") + '">' +
+        '<div class="char-wrap">' + careerChar(lvl) + "</div>" +
+        '<div class="lvl-word">LEVEL</div><div class="lvl-num">' + lvl + "</div>" +
+        '<div class="strip-caption">' + t.roles[i].title + "</div></div>";
+    }
+    $("strip").innerHTML = panels;
+
+    var doneCount = t.roles.filter(function (r) { return isDone(r.id); }).length;
+    $("progFill").style.width = (doneCount / t.roles.length * 100) + "%";
+    $("progLabel").textContent = doneCount + "/" + t.roles.length + " steps done";
+  }
+
+  function pinHTML(index, accent, mark, done) {
+    return '<div class="pin' + (done ? " pin-done" : "") + '" style="border-color:' + accent + '"><span>' + (done ? "✓" : mark) + "</span></div>";
+  }
+
+  function youCardHTML() {
+    var e = entryPoint();
+    var exp = state.exp + (state.exp === 15 ? "+" : "");
+    return '<div class="step">' +
+      '<div class="pin pin-you"><span>★</span></div>' +
+      '<div class="you-card">' +
+      '<div class="you-head">You are here</div>' +
+      '<div class="you-body"><b>' + e.label + "</b>" +
+      "<span>BDQF " + e.bdqf + " · " + exp + (state.exp === 1 ? " year" : " years") + " experience</span></div>" +
+      "</div></div>";
+  }
+
   /* ---------- render: entry chips ---------- */
   function renderEntryChips() {
     $("entryChips").innerHTML = PF.entryPoints.map(function (e) {
@@ -88,8 +241,9 @@
     if (s.type !== "study") return "";
     var nextB = Math.min(s.needBdqf, 6);
     var label = BDQF_LABEL[nextB] || ("BDQF " + nextB);
-    return '<div class="step"><div class="study-card">' +
-      '<div class="study-icon">🎓</div>' +
+    return '<div class="step">' +
+      '<div class="pin pin-study"><span>🎓</span></div>' +
+      '<div class="study-card">' +
       "<h4>Study step</h4>" +
       "<p>From " + entryPoint().label + " (BDQF " + b + ") you need one more qualification before this route starts.</p>" +
       '<div class="need-row study-need">Study toward <b>BDQF ' + nextB + "</b> — " + label + "</div>" +
@@ -102,16 +256,21 @@
     var sm = PF.stageMeta[role.stage];
     var routeBest = s.route || bestRoute(role) || role.routes[0];
 
+    var done = isDone(role.id);
     var html = '<div class="step">' +
-      '<article class="node" data-role="' + role.id + '">' +
+      pinHTML(index, sm.accent, index + 1, done) +
+      '<article class="node' + (done ? " done" : "") + '" data-role="' + role.id + '">' +
       '<div class="node-top">' +
       '<i class="node-stage" style="background:' + sm.accent + '"></i>' +
-      '<span class="node-num">' + (index + 1) + "</span>" +
+      '<div class="node-heading">' +
       '<div class="node-stage-label">' + sm.label + "</div>" +
       '<div class="node-title">' + role.title + "</div>" +
       "</div>" +
+      careerChar(roleLevel(index), "bust") +
+      "</div>" +
       '<div class="node-body">' +
       '<span class="status ' + meta.cls + '"><span class="ic">' + meta.icon + "</span>" + statusText(s) + "</span>" +
+      '<div class="future"><span class="future-label">Future you</span><p>' + (FUTURES[role.id] || "") + "</p></div>" +
       '<div class="need">' +
       '<div class="need-row"><span>Qualification</span><span>BDQF ' + routeBest.bdqf + "</span></div>" +
       '<div class="need-row"><span>Experience</span><span>' + yearsText(routeBest.years) + "</span></div>" +
@@ -125,6 +284,8 @@
       }).join("") +
       "</div>" +
       '<div class="node-next"><span>Next up</span><b>' + (role.next ? "↑ " + nextTitle(role.next) : "Top of the path") + "</b></div>" +
+      '<div class="node-actions"><button class="mark' + (done ? " on" : "") + '" data-mark="' + role.id + '">' +
+      (done ? "✓ Done" : "Mark as done") + "</button></div>" +
       "</div></article></div>";
     return html;
   }
@@ -141,8 +302,13 @@
     var t = track();
     $("trackTitle").textContent = t.name + " pathway";
     $("trackDesc").textContent = t.blurb;
+    $("studyLink").innerHTML = t.course
+      ? 'Study this at COSMO: <a href="' + t.course.url + '" target="_blank" rel="noopener">' + t.course.title + " →</a>"
+      : "";
     var study = studyStepHTML(t.roles[0]);
-    $("board").innerHTML = study + t.roles.map(nodeHTML).join("");
+    $("board").innerHTML = youCardHTML() + study + t.roles.map(nodeHTML).join("");
+    renderStrip();
+    syncURL();
   }
 
   /* ---------- drawer ---------- */
@@ -181,9 +347,15 @@
     $("drawer").innerHTML =
       '<div class="drawer-hero">' +
       '<button class="drawer-close" id="drawerClose" aria-label="Close">✕</button>' +
-      '<span class="drawer-stage">' + PF.stageMeta[role.stage].label + "</span>" +
+      '<div class="drawer-hero-main">' +
+      '<div><span class="drawer-stage">' + PF.stageMeta[role.stage].label + "</span>" +
       "<h3>" + role.title + "</h3><p>" + role.summary + "</p></div>" +
+      '<div class="drawer-char">' + careerChar(roleLevel(t.roles.indexOf(role)), "lg") +
+      '<span class="drawer-lvl">LEVEL ' + roleLevel(t.roles.indexOf(role)) + "</span></div>" +
+      "</div></div>" +
       '<div class="drawer-body">' +
+      '<div class="d-section"><h5>Your future self</h5>' +
+      '<div class="future future-lg"><p>' + (FUTURES[role.id] || "") + "</p></div></div>" +
       '<div class="d-section"><h5>Your status</h5>' + statusBanner + routesHTML + "</div>" +
       '<div class="d-section"><h5>Skills you need</h5><div class="skills-full">' + skillsHTML + "</div></div>" +
       '<div class="d-section"><h5>Certifications to consider</h5><div class="certs">' +
@@ -205,20 +377,120 @@
     $("drawer").setAttribute("aria-hidden", "true");
   }
 
+  /* ---------- quiz ---------- */
+  var QUIZ = [
+    {
+      q: "Which sounds most fun?",
+      opts: [
+        ["Building apps and websites", "apps-solutions"],
+        ["Catching hackers and securing systems", "ict-security"],
+        ["Fixing networks and servers", "telecom-network"],
+        ["Finding patterns in data", "data-ai"],
+        ["Designing posters and interfaces", "digital-media"],
+        ["Growing brands and campaigns", "business-marketing"]
+      ]
+    },
+    {
+      q: "Your ideal work style?",
+      opts: [
+        ["Deep focus, writing code", "apps-solutions"],
+        ["Always alert, solving incidents", "ict-security"],
+        ["Hands-on with machines", "telecom-network"],
+        ["Research and experiments", "data-ai"],
+        ["Creative drafts and feedback", "digital-media"],
+        ["Meetings, pitches and people", "business-marketing"]
+      ]
+    },
+    {
+      q: "Pick a superpower for work",
+      opts: [
+        ["Build anything from scratch", "apps-solutions"],
+        ["See every weakness in a system", "ict-security"],
+        ["Never lose connection", "telecom-network"],
+        ["Predict the future with data", "data-ai"],
+        ["Make anything look beautiful", "digital-media"],
+        ["Persuade anyone", "business-marketing"]
+      ]
+    }
+  ];
+  var quizStep = 0;
+  var quizScore = {};
+
+  function openQuiz() {
+    quizStep = 0;
+    quizScore = {};
+    renderQuiz();
+    $("quiz").classList.add("open");
+    $("overlay").classList.add("open");
+  }
+  function closeQuiz() {
+    $("quiz").classList.remove("open");
+    $("overlay").classList.remove("open");
+  }
+  function renderQuiz() {
+    var box = $("quizBody");
+    if (quizStep < QUIZ.length) {
+      var item = QUIZ[quizStep];
+      box.innerHTML =
+        '<div class="q-progress">Question ' + (quizStep + 1) + " of " + QUIZ.length + "</div>" +
+        "<h4>" + item.q + "</h4>" +
+        '<div class="q-opts">' +
+        item.opts.map(function (o) {
+          return '<button class="q-opt" data-qtrack="' + o[1] + '">' + o[0] + "</button>";
+        }).join("") +
+        "</div>";
+      return;
+    }
+    var bestTrack = null, bestScore = -1;
+    Object.keys(quizScore).forEach(function (k) {
+      if (quizScore[k] > bestScore) { bestScore = quizScore[k]; bestTrack = k; }
+    });
+    var t = PF.tracks.filter(function (x) { return x.id === bestTrack; })[0] || PF.tracks[0];
+    box.innerHTML =
+      '<div class="q-result">' +
+      '<div class="q-result-label">Your match</div>' +
+      "<h4>" + t.name + "</h4>" +
+      "<p>" + t.blurb + "</p>" +
+      '<button class="btn-primary" data-track="' + t.id + '" id="quizGo">Show my pathway →</button>' +
+      '<button class="btn-ghost" id="quizClose">Retake quiz</button>' +
+      "</div>";
+    $("quizGo").addEventListener("click", closeQuiz);
+  }
+
   /* ---------- events ---------- */
   document.addEventListener("click", function (e) {
+    var markBtn = e.target.closest("[data-mark]");
+    if (markBtn) {
+      toggleDone(markBtn.dataset.mark);
+      renderBoard();
+      e.stopPropagation();
+      return;
+    }
+
     var entryBtn = e.target.closest("[data-entry]");
     if (entryBtn) { state.entry = entryBtn.dataset.entry; renderEntryChips(); renderBoard(); return; }
 
     var tabBtn = e.target.closest("[data-track]");
     if (tabBtn) { state.track = tabBtn.dataset.track; renderTabs(); renderBoard(); closeDrawer(); return; }
 
+    if (e.target.closest("#shareBtn")) { shareLink(); return; }
+    if (e.target.closest("#quizBtn")) { openQuiz(); return; }
+    if (e.target.closest("#quizClose")) { closeQuiz(); return; }
+
+    var qOpt = e.target.closest("[data-qtrack]");
+    if (qOpt) {
+      quizScore[qOpt.dataset.qtrack] = (quizScore[qOpt.dataset.qtrack] || 0) + 1;
+      quizStep++;
+      renderQuiz();
+      return;
+    }
+
     var node = e.target.closest(".node");
     if (node) { openDrawer(node.dataset.role); return; }
   });
 
-  $("overlay").addEventListener("click", closeDrawer);
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
+  $("overlay").addEventListener("click", function () { closeDrawer(); closeQuiz(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeDrawer(); closeQuiz(); } });
 
   $("expRange").addEventListener("input", function (e) {
     state.exp = parseInt(e.target.value, 10) || 0;
@@ -227,6 +499,9 @@
   });
 
   /* ---------- init ---------- */
+  readURL();
+  $("expRange").value = String(state.exp);
+  $("expVal").textContent = state.exp + (state.exp === 15 ? "+" : "");
   renderEntryChips();
   renderTabs();
   renderLegend();

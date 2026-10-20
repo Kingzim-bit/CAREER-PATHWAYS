@@ -20,6 +20,7 @@ const PF = {
       name: "Software & Applications",
       short: "Software",
       blurb: "Build the apps, websites and systems people use every day.",
+      course: { title: "Pearson BTEC HND in Computing", url: "https://cosmo.edu.bn/hnd-in-computing" },
       roles: [
         {
           id: "junior-programmer",
@@ -118,6 +119,7 @@ const PF = {
       name: "Cyber Security",
       short: "Cyber Security",
       blurb: "Protect organisations from cyber threats, risk and attacks.",
+      course: { title: "CCP Cybersecurity", url: "https://cosmo.edu.bn/ccp-cybersecurity/" },
       roles: [
         {
           id: "associate-security-analyst",
@@ -217,6 +219,7 @@ const PF = {
       name: "Network & Infrastructure",
       short: "Network",
       blurb: "Keep the networks, servers and cloud running and secure.",
+      course: { title: "CCP Networking Professional", url: "https://cosmo.edu.bn/ccp-networking-professional/" },
       roles: [
         {
           id: "network-technician",
@@ -315,6 +318,7 @@ const PF = {
       name: "Data & Artificial Intelligence",
       short: "Data & AI",
       blurb: "Turn data into insight and build intelligent systems.",
+      course: { title: "CCP Data Analytics", url: "https://cosmo.edu.bn/ccp-data-analytics/" },
       roles: [
         {
           id: "data-entry",
@@ -407,8 +411,239 @@ const PF = {
           certs: ["CDMP", "ISACA CGEIT"]
         }
       ]
+    },
+    {
+      id: "digital-media",
+      name: "Digital Media & Design",
+      short: "Creative",
+      blurb: "Design brands, visuals and experiences people remember.",
+      course: { title: "CCP Graphic Design & Illustration", url: "https://cosmo.edu.bn/ccp-graphic-design-illustration/" },
+      roles: [
+        {
+          id: "junior-designer",
+          title: "Junior Graphic Designer",
+          stage: "entry",
+          summary: "Creates visuals, layouts and social graphics under a senior designer.",
+          routes: [
+            { bdqf: 4, years: 0, note: "BDQF 4 in Design, Media or a relevant portfolio" },
+            { bdqf: 3, years: 2, note: "BDQF 3 + 2 years' experience and a portfolio" }
+          ],
+          skills: [
+            ["Graphic Design", 3],
+            ["Adobe Photoshop", 3],
+            ["Adobe Illustrator", 3],
+            ["Layout & Typography", 2],
+            ["Branding Basics", 2]
+          ],
+          certs: ["Adobe Certified Professional", "CCP Graphic Design & Illustration"]
+        },
+        {
+          id: "graphic-designer",
+          title: "Graphic Designer",
+          stage: "mid",
+          summary: "Owns brand visuals from concept to final artwork for print and digital.",
+          routes: [
+            { bdqf: 5, years: 2, note: "BDQF 5 + a strong portfolio" },
+            { bdqf: 4, years: 4, note: "BDQF 4 + 4 years' relevant experience" }
+          ],
+          skills: [
+            ["Visual Design", 4],
+            ["Brand Identity", 4],
+            ["Illustration", 3],
+            ["Print Production", 3],
+            ["Client Communication", 4]
+          ],
+          certs: ["Adobe Certified Professional", "CCP Print & Digital Media Publication"]
+        },
+        {
+          id: "ui-ux-designer",
+          title: "UI/UX Designer",
+          stage: "mid",
+          summary: "Designs apps and websites that are easy and pleasant to use.",
+          routes: [
+            { bdqf: 5, years: 3, note: "BDQF 5 + 3 years' design experience or portfolio" },
+            { bdqf: 4, years: 5, note: "BDQF 4 + 5 years' design experience" }
+          ],
+          skills: [
+            ["UX Research", 4],
+            ["Interaction Design", 4],
+            ["Prototyping", 4],
+            ["Front-end Basics", 3],
+            ["Usability Testing", 4]
+          ],
+          certs: ["Google UX Design Certificate", "CCP Web and Content Management"]
+        },
+        {
+          id: "art-director",
+          title: "Art Director",
+          stage: "senior",
+          summary: "Sets the creative vision and guides designers across projects.",
+          routes: [
+            { bdqf: 6, years: 4, note: "BDQF 6 + 4 years' design experience" },
+            { bdqf: 5, years: 7, note: "BDQF 5 + 7 years' relevant experience" }
+          ],
+          skills: [
+            ["Creative Direction", 5],
+            ["Team Leadership", 4],
+            ["Brand Strategy", 4],
+            ["Campaign Design", 4],
+            ["Budgeting", 3]
+          ],
+          certs: ["D&AD Professional", "AIGA Leadership"]
+        },
+        {
+          id: "creative-director",
+          title: "Creative Director",
+          stage: "top",
+          summary: "Leads all creative output and the brand's reputation.",
+          routes: [
+            { bdqf: 6, years: 10, note: "BDQF 6 + 10 years at senior level" },
+            { bdqf: 5, years: 12, note: "BDQF 5 + 12 years at senior level" }
+          ],
+          skills: [
+            ["Creative Strategy", 5],
+            ["Innovation", 5],
+            ["Leadership", 5],
+            ["Brand Management", 5],
+            ["Vendor Management", 4]
+          ],
+          certs: ["D&AD Professional", "Cannes Lions Training"]
+        }
+      ]
+    },
+    {
+      id: "business-marketing",
+      name: "Marketing & Business",
+      short: "Marketing",
+      blurb: "Grow brands, reach customers and lead commercial teams.",
+      course: { title: "CCP Social Media Marketing & Management", url: "https://cosmo.edu.bn/ccp-social-media-marketing-management/" },
+      roles: [
+        {
+          id: "marketing-assistant",
+          title: "Marketing Assistant",
+          stage: "entry",
+          summary: "Supports campaigns, social posts and marketing admin.",
+          routes: [
+            { bdqf: 4, years: 0, note: "BDQF 4 in Business, Marketing or a relevant portfolio" },
+            { bdqf: 3, years: 2, note: "BDQF 3 + 2 years' experience" }
+          ],
+          skills: [
+            ["Digital Marketing", 3],
+            ["Social Media", 3],
+            ["Content Writing", 3],
+            ["Analytics Basics", 2],
+            ["Communication", 3]
+          ],
+          certs: ["CCP Social Media Marketing & Management", "Meta Blueprint"]
+        },
+        {
+          id: "digital-marketing-executive",
+          title: "Digital Marketing Executive",
+          stage: "mid",
+          summary: "Plans and runs digital campaigns and measures their results.",
+          routes: [
+            { bdqf: 5, years: 1, note: "BDQF 5 + 1 year's experience or portfolio" },
+            { bdqf: 4, years: 3, note: "BDQF 4 + 3 years' relevant experience" }
+          ],
+          skills: [
+            ["SEO & SEM", 4],
+            ["Campaign Management", 4],
+            ["Content Strategy", 4],
+            ["Analytics", 4],
+            ["Email Marketing", 3]
+          ],
+          certs: ["Google Digital Marketing", "Meta Certified", "HubSpot Inbound"]
+        },
+        {
+          id: "marketing-manager",
+          title: "Marketing Manager",
+          stage: "senior",
+          summary: "Owns the marketing plan, budget and brand across the company.",
+          routes: [
+            { bdqf: 5, years: 3, note: "BDQF 5 + 3 years in marketing roles" },
+            { bdqf: 6, years: 0, note: "BDQF 6 in Marketing or Business" }
+          ],
+          skills: [
+            ["Marketing Strategy", 4],
+            ["Brand Management", 4],
+            ["Budgeting", 4],
+            ["Team Leadership", 4],
+            ["Market Research", 4]
+          ],
+          certs: ["CIM Diploma", "Google Analytics"]
+        },
+        {
+          id: "business-development-manager",
+          title: "Business Development Manager",
+          stage: "senior",
+          summary: "Finds new markets, partnerships and revenue for the business.",
+          routes: [
+            { bdqf: 5, years: 4, note: "BDQF 5 + 4 years in sales or partnerships" },
+            { bdqf: 6, years: 2, note: "BDQF 6 + 2 years' relevant experience" }
+          ],
+          skills: [
+            ["Partnerships", 4],
+            ["Sales Strategy", 4],
+            ["Negotiation", 5],
+            ["Forecasting", 4],
+            ["Leadership", 4]
+          ],
+          certs: ["PMP", "Chamber of Commerce Sales Programme"]
+        },
+        {
+          id: "cmo",
+          title: "Chief Marketing Officer",
+          stage: "top",
+          summary: "Leads brand, growth and customer strategy at board level.",
+          routes: [
+            { bdqf: 6, years: 10, note: "BDQF 6 + 10 years at senior level" },
+            { bdqf: 5, years: 12, note: "BDQF 5 + 12 years at senior level" }
+          ],
+          skills: [
+            ["Brand Strategy", 5],
+            ["Growth Strategy", 5],
+            ["Leadership", 5],
+            ["Innovation", 5],
+            ["Budgeting", 4]
+          ],
+          certs: ["CIM Chartered Marketer", "MIT Marketing Programme"]
+        }
+      ]
     }
   ]
+};
+
+const FUTURES = {
+  "junior-programmer": "You'll be writing real code every day, shipping your first apps with a senior team behind you.",
+  "applications-developer": "You'll own features end to end — designing, building and testing apps people rely on.",
+  "solutions-architect": "You'll draw the big technical blueprint and decide how whole systems fit together.",
+  "software-development-manager": "You'll lead a team of developers — setting direction, unblocking people, owning delivery.",
+  "cto-apps": "You'll sit at the leadership table, deciding the company's entire technology future.",
+  "associate-security-analyst": "You'll be the first line of defence — watching the screens and catching threats early.",
+  "cyber-risk-analyst": "You'll assess risks and brief the business on what could go wrong — and how to stop it.",
+  "security-engineer": "You'll build and harden the defences that keep an organisation's systems safe.",
+  "cyber-risk-manager": "You'll own security policy and compliance, and train the whole company to stay secure.",
+  "ciso": "You'll lead security for the whole organisation and report straight to the board.",
+  "network-technician": "You'll be hands-on with cables, routers and switches — keeping the network alive.",
+  "network-engineer": "You'll design and secure bigger networks, solving the hard problems others can't.",
+  "infrastructure-engineer": "You'll run the servers, cloud and storage that everything else depends on.",
+  "infrastructure-manager": "You'll lead the infrastructure team and plan capacity, uptime and budgets.",
+  "cto-telecom": "You'll set network and infrastructure strategy across the entire organisation.",
+  "data-entry": "You'll be trusted with accurate data that every decision in the company depends on.",
+  "data-analyst": "You'll turn numbers into insight — dashboards, reports and answers for the business.",
+  "data-engineer": "You'll build the pipelines that move and clean data at scale.",
+  "data-manager": "You'll own data governance and lead a team of analysts and engineers.",
+  "bi-director": "You'll lead analytics strategy at the highest level and shape how the company uses data.",
+  "junior-designer": "You'll see your work on posters, packaging and screens around the country.",
+  "graphic-designer": "You'll own brand visuals end to end — clients will ask for you by name.",
+  "ui-ux-designer": "You'll shape the apps and websites thousands of people use every day.",
+  "art-director": "You'll set the creative vision and lead a team of designers.",
+  "creative-director": "You'll decide what the whole brand looks and feels like.",
+  "marketing-assistant": "You'll run real campaigns and see your posts reach thousands.",
+  "digital-marketing-executive": "You'll own campaigns and prove their impact with data.",
+  "marketing-manager": "You'll lead the marketing plan, budget and team.",
+  "business-development-manager": "You'll open new markets and deals that grow the company.",
+  "cmo": "You'll sit on the board and own the brand and growth of the whole company."
 };
 
 const SKILL_LEVELS = {

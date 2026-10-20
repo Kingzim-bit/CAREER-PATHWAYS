@@ -26,6 +26,10 @@
     <h1>Your career, step&nbsp;by&nbsp;step.</h1>
     <p class="hero-lead">Choose where you are starting and the job you want. We'll map the fastest route and show the qualifications, skills, certifications and experience needed at every step.</p>
 
+    <div class="hero-actions">
+      <button class="btn-quiz" id="quizBtn">✨ Not sure which career fits you? Take the 30-second quiz</button>
+    </div>
+
     <div class="controls">
       <div class="control control-grow">
         <label class="control-label">1 · Where are you starting?</label>
@@ -51,9 +55,27 @@
     <div>
       <h2 id="trackTitle"></h2>
       <p id="trackDesc"></p>
+      <p class="study-link" id="studyLink"></p>
     </div>
-    <div class="legend" id="legend"></div>
+    <div class="board-head-right">
+      <button class="btn-share" id="shareBtn">🔗 Share my pathway</button>
+      <div class="legend" id="legend"></div>
+    </div>
   </div>
+
+  <section class="strip-section">
+    <div class="strip-head">
+      <div>
+        <h3>How you'll grow</h3>
+        <p>Your future self, level by level — from student to chief.</p>
+      </div>
+      <div class="progress">
+        <span class="progress-label" id="progLabel">0/5 steps done</span>
+        <div class="prog"><div class="prog-fill" id="progFill"></div></div>
+      </div>
+    </div>
+    <div class="strip" id="strip"></div>
+  </section>
 
   <div class="pathway" id="board"></div>
 
@@ -70,6 +92,16 @@
 
 <div class="overlay" id="overlay"></div>
 <aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<div class="quiz" id="quiz" aria-hidden="true">
+  <div class="quiz-panel">
+    <button class="drawer-close quiz-close" id="quizClose" aria-label="Close">✕</button>
+    <div class="quiz-label">Career quiz</div>
+    <div id="quizBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
 <script src="app.js"></script>

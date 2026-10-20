@@ -8,10 +8,14 @@ A professional, self-contained career pathway UI for students. Pick your startin
 
 - **Start-point selector** — O'Level (BDQF 3), BTEC Level 2 (BDQF 3), BTEC Level 3 (BDQF 4), A Level / HNTec (BDQF 4), HND / Diploma (BDQF 5)
 - **Experience slider** — 0–15+ years, recomputes every status live
-- **4 tracks** — Software & Applications, Cyber Security, Network & Infrastructure, Data & AI
-- **Status badges** — ✓ Ready now · ⏳ Experience needed · 🎓 Study needed (with a study-step card when you need another qualification first)
-- **Detail drawer** — click any step for your best route, all skills with levels (1 Follow → 5 Strategise), recommended certifications and the next promotion
-- **Responsive** — horizontal pathway on desktop, vertical timeline on mobile
+- **6 tracks, 30 roles** — Software, Cyber Security, Network, Data & AI, Digital Media, Marketing & Business
+- **Level-up strip** — LEVEL 1–6 character progression showing your future self
+- **Status badges** — ✓ Ready now · ⏳ Experience needed · 🎓 Study needed (with a study-step card)
+- **Progress tracker** — mark steps as done; saved in your browser; progress bar per track
+- **Career quiz** — 3 questions, matches you to a track
+- **Share links** — state lives in the URL (`?track=…&from=…&exp=…`); "Share my pathway" copies it
+- **COSMO study links** — each track links the best course to take
+- **Detail drawer** — click any step for your route, skills with levels and certifications
 
 ## Run it
 

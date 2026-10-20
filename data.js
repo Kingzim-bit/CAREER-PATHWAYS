@@ -17,6 +17,7 @@ const PF = {
   tracks: [
     {
       id: "apps-solutions",
+      field: "it",
       name: "Software & Applications",
       short: "Software",
       blurb: "Build the apps, websites and systems people use every day.",
@@ -116,6 +117,7 @@ const PF = {
     },
     {
       id: "ict-security",
+      field: "it",
       name: "Cyber Security",
       short: "Cyber Security",
       blurb: "Protect organisations from cyber threats, risk and attacks.",
@@ -216,6 +218,7 @@ const PF = {
     },
     {
       id: "telecom-network",
+      field: "it",
       name: "Network & Infrastructure",
       short: "Network",
       blurb: "Keep the networks, servers and cloud running and secure.",
@@ -315,6 +318,7 @@ const PF = {
     },
     {
       id: "data-ai",
+      field: "it",
       name: "Data & Artificial Intelligence",
       short: "Data & AI",
       blurb: "Turn data into insight and build intelligent systems.",
@@ -414,6 +418,7 @@ const PF = {
     },
     {
       id: "digital-media",
+      field: "creative",
       name: "Digital Media & Design",
       short: "Creative",
       blurb: "Design brands, visuals and experiences people remember.",
@@ -513,6 +518,7 @@ const PF = {
     },
     {
       id: "business-marketing",
+      field: "business",
       name: "Marketing & Business",
       short: "Marketing",
       blurb: "Grow brands, reach customers and lead commercial teams.",
@@ -645,6 +651,12 @@ const FUTURES = {
   "business-development-manager": "You'll open new markets and deals that grow the company.",
   "cmo": "You'll sit on the board and own the brand and growth of the whole company."
 };
+
+const FIELDS = [
+  { id: "it", name: "IT & Technology", emoji: "💻", blurb: "Code, cyber security, networks and data." },
+  { id: "creative", name: "Creative & Design", emoji: "🎨", blurb: "Design, media and visual storytelling." },
+  { id: "business", name: "Business & Marketing", emoji: "📈", blurb: "Brands, customers and commerce." }
+];
 
 const SKILL_LEVELS = {
   1: "Follow",

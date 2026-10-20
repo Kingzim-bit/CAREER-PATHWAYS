@@ -1,5 +1,5 @@
 (function () {
-  var state = { entry: "olevel", track: "apps-solutions", exp: 0 };
+  var state = { entry: "olevel", track: "apps-solutions", exp: 0, goal: null, wizStep: 0 };
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -20,6 +20,11 @@
     if (fr && PF.entryPoints.some(function (e) { return e.id === fr; })) state.entry = fr;
     var ex = parseInt(p.get("exp"), 10);
     if (!isNaN(ex) && ex >= 0 && ex <= 50) state.exp = Math.min(ex, 15);
+    var g = p.get("goal");
+    if (g) {
+      var gt = PF.tracks.filter(function (t) { return t.roles.some(function (r) { return r.id === g; }); })[0];
+      if (gt) { state.goal = g; state.track = gt.id; }
+    }
   }
 
   function syncURL() {
@@ -28,6 +33,7 @@
       p.set("track", state.track);
       p.set("from", state.entry);
       if (state.exp) p.set("exp", String(state.exp));
+      if (state.goal) p.set("goal", state.goal);
       history.replaceState(null, "", location.pathname + "?" + p.toString());
     } catch (err) {}
   }
@@ -57,6 +63,30 @@
   }
   function track() {
     return PF.tracks.filter(function (t) { return t.id === state.track; })[0] || PF.tracks[0];
+  }
+  function goalRole() {
+    if (!state.goal) return null;
+    return track().roles.filter(function (r) { return r.id === state.goal; })[0] || null;
+  }
+  function journeyRoles() {
+    var t = track();
+    var goal = goalRole();
+    if (!goal) return t.roles;
+    var prev = {}, seen = {}, queue = [goal.id];
+    seen[goal.id] = 1;
+    while (queue.length) {
+      var cur = queue.shift();
+      var preds = t.roles.filter(function (r) { return (r.next || []).indexOf(cur) >= 0; });
+      if (!preds.length) break;
+      prev[cur] = preds[0].id;
+      if (!seen[preds[0].id]) { seen[preds[0].id] = 1; queue.push(preds[0].id); }
+    }
+    var chain = [], c = goal.id;
+    while (c) { chain.push(c); c = prev[c]; }
+    chain.reverse();
+    return chain.map(function (id) {
+      return t.roles.filter(function (r) { return r.id === id; })[0];
+    });
   }
   function yearsText(n) {
     if (n === null || n === undefined) return "experience or portfolio";
@@ -168,31 +198,26 @@
   }
 
   function renderStrip() {
-    var t = track();
-    var studyNeeded = status(t.roles[0]).type === "study";
-    var firstOnPath = -1;
-    t.roles.forEach(function (r, i) {
-      if (firstOnPath === -1 && status(r).type !== "study") firstOnPath = i;
-    });
-    var current = studyNeeded ? 1 : (firstOnPath === -1 ? 6 : firstOnPath + 2);
+    var roles = journeyRoles();
+    var current = 1;
 
     var panels = '<div class="strip-panel' + (current === 1 ? " current" : "") + '">' +
       '<div class="char-wrap">' + careerChar(1) + "</div>" +
       '<div class="lvl-word">LEVEL</div><div class="lvl-num">1</div>' +
       '<div class="strip-caption">You · ' + entryPoint().label + "</div></div>";
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < roles.length; i++) {
       var lvl = i + 2;
-      panels += '<div class="strip-panel' + (current === lvl ? " current" : "") + (isDone(t.roles[i].id) ? " done" : "") + '">' +
+      panels += '<div class="strip-panel' + (current === lvl ? " current" : "") + (isDone(roles[i].id) ? " done" : "") + '">' +
         '<div class="char-wrap">' + careerChar(lvl) + "</div>" +
         '<div class="lvl-word">LEVEL</div><div class="lvl-num">' + lvl + "</div>" +
-        '<div class="strip-caption">' + t.roles[i].title + "</div></div>";
+        '<div class="strip-caption">' + roles[i].title + "</div></div>";
     }
     $("strip").innerHTML = panels;
 
-    var doneCount = t.roles.filter(function (r) { return isDone(r.id); }).length;
-    $("progFill").style.width = (doneCount / t.roles.length * 100) + "%";
-    $("progLabel").textContent = doneCount + "/" + t.roles.length + " steps done";
+    var doneCount = roles.filter(function (r) { return isDone(r.id); }).length;
+    $("progFill").style.width = (doneCount / roles.length * 100) + "%";
+    $("progLabel").textContent = doneCount + "/" + roles.length + " steps done";
   }
 
   function pinHTML(index, accent, mark, done) {
@@ -257,13 +282,14 @@
     var routeBest = s.route || bestRoute(role) || role.routes[0];
 
     var done = isDone(role.id);
+    var isGoal = state.goal === role.id;
     var html = '<div class="step">' +
       pinHTML(index, sm.accent, index + 1, done) +
-      '<article class="node' + (done ? " done" : "") + '" data-role="' + role.id + '">' +
+      '<article class="node' + (done ? " done" : "") + (isGoal ? " goal" : "") + '" data-role="' + role.id + '">' +
       '<div class="node-top">' +
       '<i class="node-stage" style="background:' + sm.accent + '"></i>' +
       '<div class="node-heading">' +
-      '<div class="node-stage-label">' + sm.label + "</div>" +
+      '<div class="node-stage-label">' + (isGoal ? "🎯 Your goal · " : "") + sm.label + "</div>" +
       '<div class="node-title">' + role.title + "</div>" +
       "</div>" +
       careerChar(roleLevel(index), "bust") +
@@ -298,15 +324,28 @@
     return found || nextId;
   }
 
+  function goalBannerHTML() {
+    var g = goalRole();
+    if (!g) return "";
+    return '<div class="goal-banner">' +
+      '<span class="goal-emoji">🎯</span>' +
+      "<div><b>Your goal: " + g.title + "</b>" +
+      "<span>Journey of " + journeyRoles().length + " stages · " + entryPoint().label + " start</span></div>" +
+      '<button class="btn-share" id="changeGoal">Change goal</button></div>';
+  }
+
   function renderBoard() {
     var t = track();
-    $("trackTitle").textContent = t.name + " pathway";
-    $("trackDesc").textContent = t.blurb;
+    var roles = journeyRoles();
+    var g = goalRole();
+    $("trackTitle").textContent = g ? "Your journey to " + g.title : t.name + " pathway";
+    $("trackDesc").textContent = g ? "Every stage you'll pass through to reach " + g.title + "." : t.blurb;
+    $("goalBanner").innerHTML = g ? goalBannerHTML() : "";
     $("studyLink").innerHTML = t.course
       ? 'Study this at COSMO: <a href="' + t.course.url + '" target="_blank" rel="noopener">' + t.course.title + " →</a>"
       : "";
-    var study = studyStepHTML(t.roles[0]);
-    $("board").innerHTML = youCardHTML() + study + t.roles.map(nodeHTML).join("");
+    var study = studyStepHTML(roles[0]);
+    $("board").innerHTML = youCardHTML() + study + roles.map(nodeHTML).join("");
     renderStrip();
     syncURL();
   }
@@ -375,6 +414,132 @@
     $("drawer").classList.remove("open");
     $("overlay").classList.remove("open");
     $("drawer").setAttribute("aria-hidden", "true");
+  }
+
+  /* ---------- wizard ---------- */
+  var wizField = null;
+  var wizCareer = null;
+
+  function findRole(id) {
+    var found = null;
+    PF.tracks.forEach(function (t) {
+      t.roles.forEach(function (r) { if (r.id === id) found = { role: r, track: t }; });
+    });
+    return found;
+  }
+
+  function openWizard(step) {
+    state.wizStep = step;
+    renderWizard();
+    $("wizard").classList.add("open");
+  }
+  function closeWizard() {
+    $("wizard").classList.remove("open");
+    state.wizStep = -1;
+  }
+
+  function renderWizard() {
+    var w = $("wizard");
+    var step = state.wizStep;
+    var head = function (n, backable) {
+      return '<div class="wiz-bar">' +
+        (backable ? '<button class="wiz-back" data-wiz="back">← Back</button>' : "<span></span>") +
+        '<span class="wiz-step-label">Step ' + n + " of 5</span>" +
+        '<button class="wiz-skip" data-wiz="skip">Skip</button></div>';
+    };
+
+    if (step === 0) {
+      w.innerHTML = '<div class="wiz-inner">' + head(1, false) +
+        '<div class="wiz-center">' +
+        '<div class="wiz-logo"><span></span></div>' +
+        '<h1 class="wiz-title">What do you want to be?</h1>' +
+        '<p class="wiz-sub">Pick a field, choose your dream career, and we\'ll map the exact pathway — every stage, skill and certification — from where you are today.</p>' +
+        '<button class="wiz-btn primary" data-wiz="next">Start my journey →</button>' +
+        "</div></div>";
+      return;
+    }
+
+    if (step === 1) {
+      w.innerHTML = '<div class="wiz-inner">' + head(2, true) +
+        '<h2 class="wiz-q">Which field interests you?</h2>' +
+        '<div class="wiz-grid">' +
+        FIELDS.map(function (f) {
+          return '<button class="wiz-card" data-wiz="field:' + f.id + '">' +
+            '<span class="wiz-emoji">' + f.emoji + "</span>" +
+            "<b>" + f.name + "</b><span>" + f.blurb + "</span></button>";
+        }).join("") +
+        "</div></div>";
+      return;
+    }
+
+    if (step === 2) {
+      var careers = [];
+      PF.tracks.forEach(function (t) {
+        if (t.field !== wizField) return;
+        t.roles.forEach(function (r, i) { careers.push({ role: r, track: t, level: roleLevel(i) }); });
+      });
+      var f = FIELDS.filter(function (x) { return x.id === wizField; })[0];
+      w.innerHTML = '<div class="wiz-inner">' + head(3, true) +
+        '<h2 class="wiz-q">Which career do you want?</h2>' +
+        '<p class="wiz-sub wiz-sub-top">' + f.emoji + " " + f.name + " — pick the job you'd love to reach.</p>" +
+        '<div class="wiz-grid wiz-grid-careers">' +
+        careers.map(function (c) {
+          return '<button class="wiz-career' + (wizCareer === c.role.id ? " picked" : "") + '" data-wiz="career:' + c.role.id + '">' +
+            '<span class="wiz-career-char">' + careerChar(c.level, "bust") + "</span>" +
+            "<b>" + c.role.title + "</b><span>" + c.track.short + " · " + PF.stageMeta[c.role.stage].label + "</span></button>";
+        }).join("") +
+        "</div></div>";
+      return;
+    }
+
+    if (step === 3) {
+      var found = findRole(wizCareer);
+      if (!found) { state.wizStep = 1; renderWizard(); return; }
+      var role = found.role;
+      var lvl = roleLevel(found.track.roles.indexOf(role));
+      w.innerHTML = '<div class="wiz-inner">' + head(4, true) +
+        '<div class="wiz-profile">' +
+        '<div class="wiz-profile-char">' + careerChar(lvl, "lg") +
+        '<span class="drawer-lvl">LEVEL ' + lvl + "</span></div>" +
+        '<div class="wiz-profile-info">' +
+        '<span class="drawer-stage">' + PF.stageMeta[role.stage].label + " · " + found.track.name + "</span>" +
+        "<h2>" + role.title + "</h2>" +
+        '<p class="wiz-profile-sum">' + role.summary + "</p>" +
+        '<div class="future"><span class="future-label">Future you</span><p>' + (FUTURES[role.id] || "") + "</p></div>" +
+        '<button class="wiz-btn primary" data-wiz="ready">I\'m Ready — start my pathway →</button>' +
+        "</div></div></div>";
+      return;
+    }
+  }
+
+  function handleWiz(arg) {
+    if (arg === "next") { state.wizStep++; renderWizard(); return; }
+    if (arg === "back") { state.wizStep--; renderWizard(); return; }
+    if (arg === "skip") { closeWizard(); return; }
+    if (arg === "ready") {
+      var found = findRole(wizCareer);
+      if (!found) return;
+      state.track = found.track.id;
+      state.goal = found.role.id;
+      closeWizard();
+      renderTabs();
+      renderBoard();
+      var el = $("board");
+      if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    if (arg.indexOf("field:") === 0) {
+      wizField = arg.slice(6);
+      state.wizStep = 2;
+      renderWizard();
+      return;
+    }
+    if (arg.indexOf("career:") === 0) {
+      wizCareer = arg.slice(7);
+      state.wizStep = 3;
+      renderWizard();
+      return;
+    }
   }
 
   /* ---------- quiz ---------- */
@@ -467,11 +632,23 @@
       return;
     }
 
+    var wizBtn = e.target.closest("[data-wiz]");
+    if (wizBtn) { handleWiz(wizBtn.dataset.wiz); return; }
+
+    if (e.target.closest("#changeGoal")) { openWizard(1); return; }
+
     var entryBtn = e.target.closest("[data-entry]");
     if (entryBtn) { state.entry = entryBtn.dataset.entry; renderEntryChips(); renderBoard(); return; }
 
     var tabBtn = e.target.closest("[data-track]");
-    if (tabBtn) { state.track = tabBtn.dataset.track; renderTabs(); renderBoard(); closeDrawer(); return; }
+    if (tabBtn) {
+      state.track = tabBtn.dataset.track;
+      state.goal = null;
+      renderTabs();
+      renderBoard();
+      closeDrawer();
+      return;
+    }
 
     if (e.target.closest("#shareBtn")) { shareLink(); return; }
     if (e.target.closest("#quizBtn")) { openQuiz(); return; }
@@ -506,4 +683,5 @@
   renderTabs();
   renderLegend();
   renderBoard();
+  if (!state.goal) openWizard(0);
 })();

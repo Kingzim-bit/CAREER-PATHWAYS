@@ -416,6 +416,22 @@
     $("drawer").setAttribute("aria-hidden", "true");
   }
 
+  function resetAll() {
+    state.entry = "olevel";
+    state.track = "apps-solutions";
+    state.exp = 0;
+    state.goal = null;
+    $("expRange").value = "0";
+    $("expVal").textContent = "0";
+    closeDrawer();
+    closeQuiz();
+    renderEntryChips();
+    renderTabs();
+    renderBoard();
+    openWizard(0);
+    window.scrollTo({ top: 0 });
+  }
+
   /* ---------- wizard ---------- */
   var wizField = null;
   var wizCareer = null;
@@ -636,6 +652,7 @@
     if (wizBtn) { handleWiz(wizBtn.dataset.wiz); return; }
 
     if (e.target.closest("#changeGoal")) { openWizard(1); return; }
+    if (e.target.closest("#homeBtn")) { resetAll(); return; }
 
     var entryBtn = e.target.closest("[data-entry]");
     if (entryBtn) { state.entry = entryBtn.dataset.entry; renderEntryChips(); renderBoard(); return; }

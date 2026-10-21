@@ -202,15 +202,15 @@
     var current = 1;
 
     var panels = '<div class="strip-panel' + (current === 1 ? " current" : "") + '">' +
+      '<div class="lvl-head"><span class="lvl-num">1</span><span class="lvl-word">LEVEL</span></div>' +
       '<div class="char-wrap">' + careerChar(1) + "</div>" +
-      '<div class="lvl-word">LEVEL</div><div class="lvl-num">1</div>' +
       '<div class="strip-caption">You · ' + entryPoint().label + "</div></div>";
 
     for (var i = 0; i < roles.length; i++) {
       var lvl = i + 2;
       panels += '<div class="strip-panel' + (current === lvl ? " current" : "") + (isDone(roles[i].id) ? " done" : "") + '">' +
+        '<div class="lvl-head"><span class="lvl-num">' + lvl + '</span><span class="lvl-word">LEVEL</span></div>' +
         '<div class="char-wrap">' + careerChar(lvl) + "</div>" +
-        '<div class="lvl-word">LEVEL</div><div class="lvl-num">' + lvl + "</div>" +
         '<div class="strip-caption">' + roles[i].title + "</div></div>";
     }
     $("strip").innerHTML = panels;

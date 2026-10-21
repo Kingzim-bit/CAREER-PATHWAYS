@@ -191,9 +191,11 @@ h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--blue); }
 }
 .strip-panel.current .char-wrap { background: linear-gradient(180deg, #fff8dd 0%, #ffefb0 100%); }
 .career-char { width: 100%; max-width: 74px; height: auto; display: block; }
+.lvl-head { display: flex; flex-direction: column; align-items: center; gap: 1px; margin-bottom: 8px; }
+.strip-panel .career-char { max-width: 110px; height: 170px; object-fit: contain; }
 .career-char-lg { max-width: 110px; }
 .lvl-word { font-size: 9.5px; font-weight: 800; letter-spacing: .16em; color: var(--muted); }
-.lvl-num { font-size: 24px; font-weight: 800; color: var(--blue); line-height: 1; margin-top: 1px; }
+.lvl-num { font-size: 30px; font-weight: 800; color: var(--blue); line-height: 1; margin-top: 1px; }
 .strip-panel.current .lvl-num { color: var(--yellow-600); }
 .strip-caption { font-size: 11.5px; font-weight: 600; color: var(--blue); margin-top: 5px; line-height: 1.25; }
 

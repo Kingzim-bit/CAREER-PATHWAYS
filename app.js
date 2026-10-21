@@ -152,14 +152,14 @@
     var current = 1;
 
     var panels = '<div class="strip-panel' + (current === 1 ? " current" : "") + '">' +
-      '<div class="char-wrap"><img class="level-img" src="level.jpg" alt="Level 1 icon" /></div>' +
+      '<div class="char-wrap">' + careerChar(1) + "</div>" +
       '<div class="lvl-word">LEVEL</div><div class="lvl-num">1</div>' +
       '<div class="strip-caption">You · ' + entryPoint().label + "</div></div>";
 
     for (var i = 0; i < roles.length; i++) {
       var lvl = i + 2;
       panels += '<div class="strip-panel' + (current === lvl ? " current" : "") + (isDone(roles[i].id) ? " done" : "") + '">' +
-        '<div class="char-wrap"><img class="level-img" src="level.jpg" alt="Level ' + lvl + ' icon" /></div>' +
+        '<div class="char-wrap">' + careerChar(lvl) + "</div>" +
         '<div class="lvl-word">LEVEL</div><div class="lvl-num">' + lvl + "</div>" +
         '<div class="strip-caption">' + roles[i].title + "</div></div>";
     }

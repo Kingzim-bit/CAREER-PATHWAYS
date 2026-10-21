@@ -138,59 +138,9 @@
   }
 
   function careerChar(level, variant) {
-    var NAVY = "#1E2859", YEL = "#FCD00F", SHIRT = "#eef1fa", PANTS = "#3a4573";
-    var SIL = level <= 1 ? "#b6bfd9" : "#8f9ac2";
-    var vb = variant === "bust" ? "15 2 70 108" : "0 0 100 140";
+    level = Math.max(1, Math.min(6, Number(level) || 1));
     var cls = "career-char" + (variant === "lg" ? " career-char-lg" : "");
-    var s = '<svg class="' + cls + " lvl-" + level + '" viewBox="' + vb + '" aria-hidden="true">';
-
-    var legFill = level <= 1 ? SIL : PANTS;
-    s += '<rect x="34" y="92" width="13" height="42" rx="5" fill="' + legFill + '"/>';
-    s += '<rect x="53" y="92" width="13" height="42" rx="5" fill="' + legFill + '"/>';
-    if (level >= 6) {
-      s += '<rect x="31" y="126" width="18" height="9" rx="4" fill="' + YEL + '"/>';
-      s += '<rect x="51" y="126" width="18" height="9" rx="4" fill="' + YEL + '"/>';
-    }
-
-    var armFill = level <= 1 ? SIL : (level >= 5 ? NAVY : SHIRT);
-    var armStroke = (level >= 2 && level < 5) ? ' stroke="' + NAVY + '" stroke-width="1.5"' : "";
-    s += '<rect x="20" y="56" width="11" height="42" rx="5.5" fill="' + armFill + '"' + armStroke + "/>";
-    s += '<rect x="69" y="56" width="11" height="42" rx="5.5" fill="' + armFill + '"' + armStroke + "/>";
-
-    var torsoFill = level <= 1 ? SIL : SHIRT;
-    var torsoStroke = (level >= 2 && level < 5) ? ' stroke="' + NAVY + '" stroke-width="1.5"' : "";
-    s += '<path d="M30 54 Q50 46 70 54 L74 96 L26 96 Z" fill="' + torsoFill + '"' + torsoStroke + "/>";
-
-    if (level >= 3) {
-      s += '<polygon points="50,52 55,56 53,80 50,84 47,80 45,56" fill="' + NAVY + '"/>';
-      s += '<path d="M50 52 L50 68" stroke="' + YEL + '" stroke-width="2.5"/>';
-      s += '<rect x="44" y="68" width="12" height="9" rx="2" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.2"/>';
-    }
-    if (level >= 4) {
-      s += '<rect x="60" y="74" width="26" height="17" rx="2.5" fill="' + NAVY + '"/>';
-      s += '<rect x="63" y="77" width="20" height="11" rx="1.5" fill="#4453a3"/>';
-      s += '<circle cx="73" cy="92" r="1.6" fill="' + YEL + '"/>';
-    }
-    if (level >= 5) {
-      s += '<path d="M30 54 L47 51 L47 96 L26 96 Z" fill="' + NAVY + '"/>';
-      s += '<path d="M70 54 L53 51 L53 96 L74 96 Z" fill="' + NAVY + '"/>';
-      s += '<rect x="22" y="90" width="7" height="5" rx="1.5" fill="' + YEL + '"/>';
-    }
-    if (level >= 6) {
-      s += '<ellipse cx="26" cy="56" rx="10" ry="8" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.5"/>';
-      s += '<ellipse cx="74" cy="56" rx="10" ry="8" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.5"/>';
-      s += '<path d="M50 58 L53.5 66.5 L62.5 67 L55.5 72.5 L57.8 81 L50 76.2 L42.2 81 L44.5 72.5 L37.5 67 L46.5 66.5 Z" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1"/>';
-    }
-
-    s += '<circle cx="50" cy="32" r="15" fill="' + SIL + '"/>';
-    if (level >= 6) {
-      s += '<path d="M33 20 L37 9 L43.5 16 L50 6 L56.5 16 L63 9 L67 20 Z" fill="' + YEL + '" stroke="' + NAVY + '" stroke-width="1.2"/>';
-    } else if (level <= 1) {
-      s += '<polygon points="28,22 50,13 72,22 50,31" fill="' + NAVY + '"/>';
-      s += '<path d="M72 22 L74 32" stroke="' + YEL + '" stroke-width="2.5"/>';
-      s += '<circle cx="74" cy="33.5" r="2.6" fill="' + YEL + '"/>';
-    }
-    return s + "</svg>";
+    return '<img class="' + cls + ' lvl-' + level + '" src="assets/levels/level-' + level + '.svg" alt="Level ' + level + ' career outfit">';
   }
 
   function roleLevel(index) {
@@ -202,14 +152,14 @@
     var current = 1;
 
     var panels = '<div class="strip-panel' + (current === 1 ? " current" : "") + '">' +
-      '<div class="char-wrap">' + careerChar(1) + "</div>" +
+      '<div class="char-wrap"><img class="level-img" src="level.jpg" alt="Level 1 icon" /></div>' +
       '<div class="lvl-word">LEVEL</div><div class="lvl-num">1</div>' +
       '<div class="strip-caption">You · ' + entryPoint().label + "</div></div>";
 
     for (var i = 0; i < roles.length; i++) {
       var lvl = i + 2;
       panels += '<div class="strip-panel' + (current === lvl ? " current" : "") + (isDone(roles[i].id) ? " done" : "") + '">' +
-        '<div class="char-wrap">' + careerChar(lvl) + "</div>" +
+        '<div class="char-wrap"><img class="level-img" src="level.jpg" alt="Level ' + lvl + ' icon" /></div>' +
         '<div class="lvl-word">LEVEL</div><div class="lvl-num">' + lvl + "</div>" +
         '<div class="strip-caption">' + roles[i].title + "</div></div>";
     }
